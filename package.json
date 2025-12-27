@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "node -e \"console.log('BUILD_MARKER_HEXADASH_123');\" && ng build --configuration production --progress=false --verbose && node -e \"const fs=require('fs'); console.log('DIST_EXISTS', fs.existsSync('dist')); console.log('BROWSER_EXISTS', fs.existsSync('dist/hexadash-front/browser'));\" && ls -la dist && ls -la dist/hexadash-front && ls -la dist/hexadash-front/browser"
+    "build": "echo BUILD_MARKER_HEXADASH_123 && ng build --configuration production --progress=false --verbose && node -p \"require('fs').existsSync('dist/hexadash-front/browser')\" && ls -la dist && ls -la dist/hexadash-front && ls -la dist/hexadash-front/browser"
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:hexadash-front": "node dist/hexadash-front/server/server.mjs"
