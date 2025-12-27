@@ -5,6 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build --configuration production --progress=false --verbose --output-path=dist/hexadash-front",
+    "build:static": "ng build --configuration production --progress=false --verbose --ssr=false --output-path=dist/hexadash-front",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:hexadash-front": "node dist/hexadash-front/server/server.mjs"
