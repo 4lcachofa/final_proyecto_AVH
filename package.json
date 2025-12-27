@@ -4,7 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
+    "build": "ng build --configuration production --progress=false --verbose",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "serve:ssr:hexadash-front": "node dist/hexadash-front/server/server.mjs"
