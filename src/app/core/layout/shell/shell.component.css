@@ -1,0 +1,25 @@
+.app{
+  min-height:100vh;
+  background:#f6f7fb;
+  display:grid;
+  grid-template-columns: 260px 1fr;
+}
+
+.side{
+  background:#ffffff;
+  border-right:1px solid rgba(17,24,39,.08);
+  position:sticky;
+  top:0;
+  height:100vh;
+}
+
+.main{
+  display:flex;
+  flex-direction:column;
+  min-width:0;
+}
+
+.content{
+  padding:22px;
+  min-width:0;
+}

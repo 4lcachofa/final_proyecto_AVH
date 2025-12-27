@@ -1,0 +1,133 @@
+<div class="headrow">
+  <h2 class="page-title">Equipos</h2>
+  <button class="btnx" type="button" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nuevo equipo
+  </button>
+</div>
+
+<div class="cardx">
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="alertx">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="tablex">
+    <thead>
+      <tr>
+        <th style="width:90px">ID</th>
+        <th>Equipo</th>
+        <th>Apodo</th>
+        <th>Liga</th>
+        <th>Entrenador</th>
+        <th style="width:220px; text-align:right">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let e of equipos">
+        <td>#{{ e.id }}</td>
+        <td><b>{{ e.nombre }}</b></td>
+        <td>{{ e.apodo }}</td>
+        <td>{{ e.ligaNombre }}</td>
+        <td>
+          <span *ngIf="e.entrenadorNombre; else noCoach">{{ e.entrenadorNombre }}</span>
+          <ng-template #noCoach><span class="muted">Sin entrenador</span></ng-template>
+        </td>
+        <td>
+          <div class="actions">
+            <button class="iconact" type="button" title="Asignar entrenador" (click)="openAssignCoach(e)">
+              <i class="bi bi-person-plus"></i>
+            </button>
+
+            <button class="iconact" type="button" title="Quitar entrenador" (click)="quitarCoach(e)" [disabled]="saving">
+              <i class="bi bi-person-dash"></i>
+            </button>
+
+            <button class="iconact" type="button" title="Editar" (click)="openEdit(e)">
+              <i class="bi bi-pencil"></i>
+            </button>
+
+            <button class="iconact" type="button" title="Eliminar" (click)="openDelete(e)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODALES -->
+<div class="backdrop" *ngIf="modal !== 'none'" (click)="closeModal()"></div>
+
+<div class="modalx" *ngIf="modal !== 'none'">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">
+        {{
+          modal === 'create' ? 'Nuevo Equipo' :
+          modal === 'edit' ? 'Editar Equipo' :
+          modal === 'assignCoach' ? 'Asignar Entrenador' :
+          'Eliminar Equipo'
+        }}
+      </div>
+      <button class="xbtn" type="button" (click)="closeModal()">✕</button>
+    </div>
+
+    <!-- CREATE/EDIT -->
+    <form *ngIf="modal==='create' || modal==='edit'" [formGroup]="form" (ngSubmit)="save()">
+      <div class="grid2">
+        <div>
+          <label class="lbl">Nombre</label>
+          <input class="inp" formControlName="nombre" placeholder="Equipo..." />
+        </div>
+        <div>
+          <label class="lbl">Apodo</label>
+          <input class="inp" formControlName="apodo" placeholder="Apodo..." />
+        </div>
+
+        <div class="span2">
+          <label class="lbl">Liga</label>
+          <select class="inp" formControlName="ligaId">
+            <option [ngValue]="null">Selecciona una liga...</option>
+            <option *ngFor="let l of ligas" [ngValue]="l.id">
+              #{{ l.id }} - {{ l.nombre }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btnx" type="submit" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+
+    <!-- ASSIGN COACH -->
+    <form *ngIf="modal==='assignCoach'" [formGroup]="coachForm" (ngSubmit)="saveCoach()">
+      <p class="muted">Equipo: <b>#{{ selected?.id }}</b> {{ selected?.nombre }}</p>
+
+      <label class="lbl">Entrenador</label>
+      <select class="inp" formControlName="entrenadorId">
+        <option [ngValue]="null">Selecciona entrenador...</option>
+        <option *ngFor="let t of entrenadores" [ngValue]="t.id">
+          #{{ t.id }} - {{ t.nombre }} ({{ t.especialidad }})
+        </option>
+      </select>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btnx" type="submit" [disabled]="saving">{{ saving ? 'Asignando...' : 'Asignar' }}</button>
+      </div>
+    </form>
+
+    <!-- DELETE -->
+    <div *ngIf="modal==='confirmDelete'">
+      <p>¿Eliminar el equipo <b>#{{ selected?.id }}</b> <span class="muted">{{ selected?.nombre }}</span>?</p>
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btndanger" type="button" [disabled]="saving" (click)="doDelete()">
+          {{ saving ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

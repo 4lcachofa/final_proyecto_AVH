@@ -1,0 +1,110 @@
+<div class="headrow">
+  <h2 class="page-title">Jugadores</h2>
+  <button class="btnx" type="button" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nuevo jugador
+  </button>
+</div>
+
+<div class="cardx">
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="alertx">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="tablex">
+    <thead>
+      <tr>
+        <th style="width:90px">ID</th>
+        <th>Jugador</th>
+        <th>Posición</th>
+        <th style="width:100px">#</th>
+        <th style="width:110px">Edad</th>
+        <th>Equipo</th>
+        <th>Liga</th>
+        <th style="width:180px; text-align:right">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let j of jugadores">
+        <td>#{{ j.id }}</td>
+        <td><b>{{ j.nombre }}</b></td>
+        <td>{{ j.posicion }}</td>
+        <td>{{ j.numero }}</td>
+        <td>{{ j.edad }}</td>
+        <td>{{ j.equipoNombre }}</td>
+        <td>{{ j.ligaNombre }}</td>
+        <td>
+          <div class="actions">
+            <button class="iconact" type="button" title="Editar" (click)="openEdit(j)">
+              <i class="bi bi-pencil"></i>
+            </button>
+            <button class="iconact" type="button" title="Eliminar" (click)="openDelete(j)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="backdrop" *ngIf="modal !== 'none'" (click)="closeModal()"></div>
+
+<div class="modalx" *ngIf="modal !== 'none'">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">
+        {{ modal === 'create' ? 'Nuevo Jugador' : modal === 'edit' ? 'Editar Jugador' : 'Eliminar Jugador' }}
+      </div>
+      <button class="xbtn" type="button" (click)="closeModal()">✕</button>
+    </div>
+
+    <form *ngIf="modal==='create' || modal==='edit'" [formGroup]="form" (ngSubmit)="save()">
+      <div class="grid2">
+        <div class="span2">
+          <label class="lbl">Nombre</label>
+          <input class="inp" formControlName="nombre" placeholder="Nombre completo..." />
+        </div>
+
+        <div>
+          <label class="lbl">Posición</label>
+          <input class="inp" formControlName="posicion" placeholder="Delantero, portero..." />
+        </div>
+
+        <div>
+          <label class="lbl">Número</label>
+          <input class="inp" type="number" formControlName="numero" />
+        </div>
+
+        <div>
+          <label class="lbl">Edad</label>
+          <input class="inp" type="number" formControlName="edad" />
+        </div>
+
+        <div class="span2">
+          <label class="lbl">Equipo</label>
+          <select class="inp" formControlName="equipoId">
+            <option [ngValue]="null">Selecciona equipo...</option>
+            <option *ngFor="let e of equipos" [ngValue]="e.id">
+              #{{ e.id }} - {{ e.nombre }} ({{ e.ligaNombre }})
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btnx" type="submit" [disabled]="saving">{{ saving ? 'Guardando...' : 'Guardar' }}</button>
+      </div>
+    </form>
+
+    <div *ngIf="modal==='confirmDelete'">
+      <p>¿Eliminar el jugador <b>#{{ selected?.id }}</b> <span class="muted">{{ selected?.nombre }}</span>?</p>
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btndanger" type="button" [disabled]="saving" (click)="doDelete()">
+          {{ saving ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

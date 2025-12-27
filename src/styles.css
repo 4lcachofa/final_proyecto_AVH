@@ -1,0 +1,71 @@
+.page-title{
+  font-size:22px;
+  font-weight:900;
+  color:#111827;
+  margin:0 0 14px;
+}
+
+.cardx{
+  background:#fff;
+  border:1px solid rgba(17,24,39,.08);
+  border-radius:14px;
+  box-shadow:0 12px 40px rgba(16,24,40,.06);
+  padding:16px;
+}
+
+.tablex{
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0;
+  overflow:hidden;
+  border-radius:12px;
+}
+
+.tablex thead th{
+  font-size:12px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#6b7280;
+  font-weight:900;
+  padding:12px 12px;
+  border-bottom:1px solid rgba(17,24,39,.08);
+  background:#fbfbfe;
+}
+
+.tablex tbody td{
+  padding:12px 12px;
+  border-bottom:1px solid rgba(17,24,39,.06);
+  font-weight:600;
+  color:#111827;
+  vertical-align:middle;
+}
+
+.tablex tbody tr:hover{
+  background:rgba(124,58,237,.06);
+}
+
+.badge-soft{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 10px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:900;
+}
+.badge-green{ background:rgba(16,185,129,.14); color:#047857; }
+.badge-red{ background:rgba(239,68,68,.14); color:#b91c1c; }
+
+.actions{
+  display:flex;
+  gap:10px;
+  justify-content:flex-end;
+}
+.iconact{
+  width:34px;height:34px;
+  border-radius:10px;
+  border:1px solid rgba(17,24,39,.10);
+  background:#fff;
+  display:grid;place-items:center;
+}
+.iconact:hover{ box-shadow:0 8px 20px rgba(16,24,40,.08); }

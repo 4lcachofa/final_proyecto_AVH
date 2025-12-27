@@ -1,0 +1,175 @@
+<div class="headrow">
+  <h2 class="page-title">Competencias</h2>
+  <button class="btnx" type="button" (click)="openCreate()">
+    <i class="bi bi-plus-lg"></i> Nueva competencia
+  </button>
+</div>
+
+<div class="cardx">
+  <div *ngIf="loading">Cargando...</div>
+  <div *ngIf="error" class="alertx">{{ error }}</div>
+
+  <table *ngIf="!loading && !error" class="tablex">
+    <thead>
+      <tr>
+        <th style="width:90px">ID</th>
+        <th>Fecha</th>
+        <th>Lugar</th>
+        <th>Local</th>
+        <th>Visita</th>
+        <th style="width:120px">Marcador</th>
+        <th style="width:140px">Estado</th>
+        <th style="width:220px; text-align:right">Acciones</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let c of competencias">
+        <td>#{{ c.id }}</td>
+        <td>{{ fmt(c.fecha) }}</td>
+        <td>{{ c.lugar }}</td>
+        <td>{{ c.equipoLocalNombre }}</td>
+        <td>{{ c.equipoVisitaNombre }}</td>
+        <td><b>{{ c.golesLocal }}</b> - <b>{{ c.golesVisita }}</b></td>
+        <td>
+          <span class="badge-soft" [class.badge-green]="c.finalizado" [class.badge-red]="!c.finalizado">
+            {{ c.finalizado ? 'Finalizado' : 'Pendiente' }}
+          </span>
+        </td>
+        <td>
+          <div class="actions">
+            <button class="iconact" type="button" title="Editar agenda" (click)="openEditAgenda(c)">
+              <i class="bi bi-calendar2-week"></i>
+            </button>
+            <button class="iconact" type="button" title="Resultado" (click)="openResultado(c)">
+              <i class="bi bi-clipboard-check"></i>
+            </button>
+            <button class="iconact" type="button" title="Eliminar" (click)="openDelete(c)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL BACKDROP -->
+<div class="backdrop" *ngIf="modal !== 'none'" (click)="closeModal()"></div>
+
+<!-- MODAL -->
+<div class="modalx" *ngIf="modal !== 'none'">
+  <div class="modal-card" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div class="modal-title">
+        <ng-container [ngSwitch]="modal">
+          <span *ngSwitchCase="'create'">Nueva Competencia</span>
+          <span *ngSwitchCase="'editAgenda'">Editar Agenda</span>
+          <span *ngSwitchCase="'resultado'">Registrar Resultado</span>
+          <span *ngSwitchCase="'confirmDelete'">Eliminar Competencia</span>
+        </ng-container>
+      </div>
+
+      <button class="xbtn" type="button" (click)="closeModal()">✕</button>
+    </div>
+
+    <!-- CREATE / EDIT AGENDA -->
+    <form *ngIf="modal === 'create' || modal === 'editAgenda'" [formGroup]="agendaForm"
+          (ngSubmit)="modal === 'create' ? saveCreate() : saveEditAgenda()">
+
+      <div class="grid2">
+        <div>
+          <label class="lbl">Fecha y hora</label>
+          <input class="inp" type="datetime-local" formControlName="fecha" />
+          <small class="err" *ngIf="agendaForm.get('fecha')?.touched && agendaForm.get('fecha')?.invalid">
+            Fecha requerida.
+          </small>
+        </div>
+
+        <div>
+          <label class="lbl">Lugar</label>
+          <input class="inp" formControlName="lugar" placeholder="Cancha 1, Auditorio..." />
+          <small class="err" *ngIf="agendaForm.get('lugar')?.touched && agendaForm.get('lugar')?.invalid">
+            Lugar requerido.
+          </small>
+        </div>
+
+        <div>
+          <label class="lbl">Equipo Local</label>
+          <select class="inp" formControlName="equipoLocalId">
+            <option [ngValue]="null">Selecciona...</option>
+            <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }} (#{{e.id}})</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="lbl">Equipo Visita</label>
+          <select class="inp" formControlName="equipoVisitaId">
+            <option [ngValue]="null">Selecciona...</option>
+            <option *ngFor="let e of equipos" [ngValue]="e.id">{{ e.nombre }} (#{{e.id}})</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btnx" type="submit" [disabled]="saving">
+          {{ saving ? 'Guardando...' : (modal === 'create' ? 'Crear' : 'Actualizar') }}
+        </button>
+      </div>
+    </form>
+
+    <!-- RESULTADO -->
+    <form *ngIf="modal === 'resultado'" [formGroup]="resultadoForm" (ngSubmit)="saveResultado()">
+      <div class="grid2">
+        <div class="span2">
+          <div class="match">
+            <div class="mteam">
+              <div class="pill">LOCAL</div>
+              <div class="mname">{{ selected?.equipoLocalNombre }}</div>
+            </div>
+            <div class="scorebox">
+              <input class="score" type="number" min="0" formControlName="golesLocal" />
+              <div class="dash">-</div>
+              <input class="score" type="number" min="0" formControlName="golesVisita" />
+            </div>
+            <div class="mteam right">
+              <div class="pill">VISITA</div>
+              <div class="mname">{{ selected?.equipoVisitaNombre }}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="span2">
+          <label class="chk">
+            <input type="checkbox" formControlName="finalizado" />
+            Marcar como finalizado
+          </label>
+        </div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btnx" type="submit" [disabled]="saving">
+          {{ saving ? 'Guardando...' : 'Guardar Resultado' }}
+        </button>
+      </div>
+    </form>
+
+    <!-- DELETE -->
+    <div *ngIf="modal === 'confirmDelete'">
+      <p class="pdel">
+        ¿Seguro que deseas eliminar la competencia <b>#{{ selected?.id }}</b>?
+        <br />
+        <span class="muted">{{ selected?.equipoLocalNombre }} vs {{ selected?.equipoVisitaNombre }}</span>
+      </p>
+
+      <div class="modal-actions">
+        <button class="btnlite" type="button" (click)="closeModal()">Cancelar</button>
+        <button class="btndanger" type="button" [disabled]="saving" (click)="doDelete()">
+          {{ saving ? 'Eliminando...' : 'Eliminar' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

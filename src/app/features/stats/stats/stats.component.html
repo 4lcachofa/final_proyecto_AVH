@@ -1,0 +1,152 @@
+<div class="headrow">
+  <h2 class="page-title">Estadísticas</h2>
+  <button class="btnlite" type="button" (click)="loadAll()">
+    <i class="bi bi-arrow-clockwise"></i> Actualizar
+  </button>
+</div>
+
+<div *ngIf="loading">Cargando...</div>
+<div *ngIf="error" class="alertx">{{ error }}</div>
+
+<div *ngIf="!loading && !error">
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico"><i class="bi bi-trophy"></i></div>
+        <div class="kpi-name">Ligas</div>
+      </div>
+      <div class="kpi-val">{{ totalLigas }}</div>
+      <div class="kpi-sub muted">Registradas</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico"><i class="bi bi-shield"></i></div>
+        <div class="kpi-name">Equipos</div>
+      </div>
+      <div class="kpi-val">{{ totalEquipos }}</div>
+      <div class="kpi-sub muted">Registrados</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico"><i class="bi bi-people"></i></div>
+        <div class="kpi-name">Jugadores</div>
+      </div>
+      <div class="kpi-val">{{ totalJugadores }}</div>
+      <div class="kpi-sub muted">Registrados</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-top">
+        <div class="kpi-ico"><i class="bi bi-person-badge"></i></div>
+        <div class="kpi-name">Entrenadores</div>
+      </div>
+      <div class="kpi-val">{{ totalEntrenadores }}</div>
+      <div class="kpi-sub muted">Registrados</div>
+    </div>
+  </div>
+
+  <!-- Competencias -->
+  <div class="grid2">
+    <div class="cardx">
+      <div class="card-title">Competencias</div>
+
+      <div class="meter">
+        <div class="meter-row">
+          <div class="meter-name">Finalizadas</div>
+          <div class="meter-val"><b>{{ finalizadas }}</b> / {{ totalCompetencias }}</div>
+        </div>
+        <div class="bar">
+          <div class="bar-fill" [style.width.%]="pct(finalizadas, totalCompetencias)"></div>
+        </div>
+
+        <div class="meter-row" style="margin-top:12px;">
+          <div class="meter-name">Pendientes</div>
+          <div class="meter-val"><b>{{ pendientes }}</b> / {{ totalCompetencias }}</div>
+        </div>
+        <div class="bar bar-soft">
+          <div class="bar-fill bar-fill-soft" [style.width.%]="pct(pendientes, totalCompetencias)"></div>
+        </div>
+
+        <div class="chips">
+          <span class="chip green">Finalizadas: {{ pct(finalizadas, totalCompetencias) }}%</span>
+          <span class="chip red">Pendientes: {{ pct(pendientes, totalCompetencias) }}%</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Jugadores por liga (barras CSS) -->
+    <div class="cardx">
+      <div class="card-title">Jugadores por Liga</div>
+
+      <div class="bars">
+        <div class="barrow" *ngFor="let x of jugadoresPorLiga">
+          <div class="barleft">
+            <div class="barlabel">{{ x.liga }}</div>
+            <div class="muted">{{ x.count }} jugadores</div>
+          </div>
+          <div class="barright">
+            <div class="hbar">
+              <div class="hbar-fill" [style.width.%]="x.pct"></div>
+            </div>
+            <div class="barpct">{{ x.pct }}%</div>
+          </div>
+        </div>
+
+        <div *ngIf="jugadoresPorLiga.length === 0" class="muted">
+          No hay jugadores aún para graficar.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top equipos -->
+  <div class="cardx" style="margin-top:14px;">
+    <div class="card-head">
+      <div class="card-title">Top Equipos (tabla por puntos)</div>
+      <div class="muted">Calculado con competencias finalizadas</div>
+    </div>
+
+    <table class="tablex">
+      <thead>
+        <tr>
+          <th style="width:70px">#</th>
+          <th>Equipo</th>
+          <th>Liga</th>
+          <th style="width:70px">PJ</th>
+          <th style="width:70px">G</th>
+          <th style="width:70px">E</th>
+          <th style="width:70px">P</th>
+          <th style="width:80px">GF</th>
+          <th style="width:80px">GC</th>
+          <th style="width:80px">DG</th>
+          <th style="width:90px">PTS</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let t of topEquipos; let i = index">
+          <td><b>{{ i + 1 }}</b></td>
+          <td><b>{{ t.nombre }}</b></td>
+          <td>{{ t.ligaNombre || '-' }}</td>
+          <td>{{ t.pj }}</td>
+          <td>{{ t.g }}</td>
+          <td>{{ t.e }}</td>
+          <td>{{ t.p }}</td>
+          <td>{{ t.gf }}</td>
+          <td>{{ t.gc }}</td>
+          <td [class.good]="t.dg>0" [class.bad]="t.dg<0">{{ t.dg }}</td>
+          <td><span class="pill">{{ t.pts }}</span></td>
+        </tr>
+
+        <tr *ngIf="topEquipos.length === 0">
+          <td colspan="11" class="muted" style="padding:14px;">
+            Aún no hay competencias finalizadas para calcular tabla.
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

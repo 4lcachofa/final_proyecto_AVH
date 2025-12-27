@@ -1,0 +1,34 @@
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="logo">H</div>
+      <div class="t1">HexaDash</div>
+    </div>
+
+    <h2 class="title">Sign In HexaDash</h2>
+
+    <div *ngIf="error" class="alert">{{ error }}</div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label class="lbl">Email Address</label>
+      <input class="inp" formControlName="email" placeholder="name@example.com" />
+      <small class="err" *ngIf="form.get('email')?.touched && form.get('email')?.invalid">
+        Email inválido.
+      </small>
+
+      <label class="lbl">Password</label>
+      <input class="inp" type="password" formControlName="password" placeholder="Password" />
+      <small class="err" *ngIf="form.get('password')?.touched && form.get('password')?.invalid">
+        Mínimo 6 caracteres.
+      </small>
+
+      <button class="btn" type="submit" [disabled]="loading">
+        {{ loading ? 'Signing...' : 'Sign In' }}
+      </button>
+    </form>
+
+    <div class="foot">
+      Don't have an account? <a routerLink="/register">Sign up</a>
+    </div>
+  </div>
+</div>

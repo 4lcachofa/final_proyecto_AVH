@@ -1,0 +1,37 @@
+.top{
+  height:64px;
+  background:#ffffff;
+  border-bottom:1px solid rgba(17,24,39,.08);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 18px;
+}
+
+.iconbtn{
+  width:40px;height:40px;
+  border-radius:10px;
+  border:1px solid rgba(17,24,39,.10);
+  background:#fff;
+  display:grid;place-items:center;
+}
+.iconbtn:hover{ box-shadow:0 8px 20px rgba(16,24,40,.08); }
+
+.right{ display:flex; align-items:center; gap:10px; }
+
+.user{ display:flex; align-items:center; gap:10px; margin-left:6px; }
+.avatar{
+  width:34px;height:34px;
+  border-radius:12px;
+  background:rgba(124,58,237,.12);
+  color:#4c1d95;
+  display:grid;place-items:center;
+  font-weight:900;
+}
+.logout{
+  border:none;
+  background:transparent;
+  font-weight:700;
+  color:#111827;
+}
+.logout i{ margin-left:6px; }
